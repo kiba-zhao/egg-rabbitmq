@@ -1,0 +1,64 @@
+{
+  "name": "egg-rabbitmq",
+  "version": "1.0.0",
+  "description": "rabbitmq 插件",
+  "eggPlugin": {
+    "name": "rabbitmq"
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin"
+  ],
+  "dependencies": {
+    "amqplib": "^0.6.0",
+    "lodash": "^4.17.20",
+    "mime": "^2.4.6",
+    "sdk-base": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.5.16",
+    "@types/lodash": "^4.14.165",
+    "@types/mime": "^2.0.3",
+    "@types/node": "^14.14.10",
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg": "^2.16.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "npm run lint -- --fix && egg-bin pkgfiles && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "egg-bin pkgfiles --check && npm run lint && npm run cov",
+    "pkgfiles": "egg-bin pkgfiles",
+    "autod": "autod"
+  },
+  "files": [
+    "app.js",
+    "agent.js",
+    "config",
+    "app"
+  ],
+  "ci": {
+    "version": "8, 10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiba-zhao/egg-rabbitmq.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiba-zhao/egg-rabbitmq/issues"
+  },
+  "homepage": "https://github.com/kiba-zhao/egg-rabbitmq#readme",
+  "author": "kiba.x.zhao",
+  "license": "MIT"
+}
