@@ -13,13 +13,14 @@ module.exports = appInfo => {
   exports.rabbitmq = {
     producer: {
       target: 'mq',
-      dir: path.join(appInfo.baseDir, 'rabbitmq/producer'),
-      caseStyle: 'upper'
+      directory: path.join(appInfo.baseDir, 'app/rabbitmq/producer'),
+      caseStyle: 'upper',
     },
     consumer: {
-      dir: path.join(appInfo.baseDir, 'rabbitmq/consumer'),
-      caseStyle: 'upper'
-    }
+      target: 'consumer',
+      directory: path.join(appInfo.baseDir, 'app/rabbitmq/consumer'),
+      caseStyle: 'upper',
+    },
   };
 
   return exports;

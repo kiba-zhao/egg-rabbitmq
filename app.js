@@ -15,26 +15,27 @@ const Handler = require('./lib/handler');
 class AppBootHook {
   constructor(app) {
     this.app = app;
-    app.addSingleton(NAME, createClient);
   }
 
   async didLoad() {
     const { app } = this;
-
     const config = app.config[NAME];
+
+    const opts = config.clients && config.clients.producer ? config.clients.producer : config.client;
+    if (!opts) { return; }
+
+    app[NAME] = await createClient(opts);
     if (config.producer) {
       await loadToApp(config.producer, app);
     }
 
     const registry = config.consumer && app.cluster(RegistryClient, config.registry).create({});
-    if (registry)
-      this.handler = await initHandler(registry, app, config.consumer);
+    if (registry) { this.handler = await initHandler(registry, app, config.consumer); }
   }
 
   async beforeClose() {
     const { handler } = this;
-    if (handler)
-      handler.destroy();
+    if (handler) { handler.destroy(); }
   }
 }
 
@@ -46,28 +47,19 @@ async function initHandler(registry, app, options) {
   let count = 0;
   const initializer = (...args) => {
     count++;
-    const model = options.initializer ? options.initializer(...args) : args[0];
-    return new model(ctx);
+    const Model = options.initializer ? options.initializer(...args) : args[0];
+    return new Model(ctx);
   };
-  const target = (new app.loader.FileLoader({ ...options, target: {}, initializer, inject: app })).load();
-  if (count <= 0)
-    return null;
+  const { directory, target, ...opts } = options;
+  app.loader.loadToApp(directory, target, { ...opts, initializer });
+  const models = app[target];
+  if (count <= 0) { return null; }
 
   const handler = new Handler(registry);
-  await handler.exec(async (...args) => {
-    let error = null;
-    try {
-      const [name, message] = args;
-      await target[name].consume(message);
-    } catch (e) {
-      error = e;
-      app.logger.error(`[egg-rabbit] OnConsumerEmit: ${e.message}`);
-    } finally {
-      if (error)
-        handler.throw(...args);
-      else
-        handler.ok(...args);
-    }
+  await handler.exec(async (name, ...args) => {
+    await models[name].consume(...args);
+  }, e => {
+    app.logger.error(`[egg-rabbit] OnConsumerEmit: ${e.message}`);
   });
 
   return handler;
@@ -75,13 +67,13 @@ async function initHandler(registry, app, options) {
 
 async function loadToApp(config, app) {
 
-  const { dir, target, ...opts } = config;
+  const { directory, target, ...opts } = config;
   if (!opts.initializer) {
     const client = app[NAME];
-    opts.initializer = (factory) => {
+    opts.initializer = factory => {
       return new Producer(factory, { client, app });
     };
   }
-  app.loader.loadToApp(dir, target, opts);
+  app.loader.loadToApp(directory, target, opts);
 
 }
