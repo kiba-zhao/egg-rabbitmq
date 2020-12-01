@@ -20,7 +20,7 @@
 [download-image]: https://img.shields.io/npm/dm/egg-rabbitmq.svg?style=flat-square
 [download-url]: https://npmjs.org/package/egg-rabbitmq
 
-[eggjs](https://eggjs.org/zh-cn/index.html)的rabbitmq插件。支持生产与消费消息．
+使用[amqplib](http://www.squaremobius.net/amqp.node/)实现的[eggjs](https://eggjs.org/zh-cn/index.html)rabbitmq插件。支持生产与消费消息．
 
 ## Install
 
