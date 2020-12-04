@@ -49,7 +49,10 @@ function initConsumers(registry, agent, options) {
 
   const consumers = {};
   for (const key in target) {
-    const consumer = consumers[key] = new Consumer(key, target[key], { client: agent[NAME], registry });
+    const model = target[key];
+    const disabled = !!(model.options && model.options.disabled);
+    if (disabled) { continue; }
+    const consumer = consumers[key] = new Consumer(key, model, { client: agent[NAME], registry });
     consumer.init();
   }
 

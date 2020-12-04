@@ -127,6 +127,7 @@ class SimpleConsumer extends Consumer {
   static get options() {
     return {
       queue: 'simple', // 消费的队列
+      //disabled: true, //禁用当前消费模型
       // allUpTo: true,
       // requeue: true,
       // consumeOpts:{}  //消费可选项
@@ -141,6 +142,13 @@ class SimpleConsumer extends Consumer {
 
 module.exports = SimpleConsumer;
 ```
+
+## 关于重试机制 ##
+如果channel或connection出现异常（即发生error事件）,插件会尝试重建链接或channel．
+
+> 间隔时间为前5次5秒
+> 5次过后每增加1次重试，间隔增加5秒
+> 最大间隔时间为20分钟
 
 ## Questions & Suggestions
 

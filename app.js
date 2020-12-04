@@ -43,6 +43,7 @@ class AppBootHook {
 module.exports = AppBootHook;
 
 async function initHandler(registry, app, options) {
+
   const ctx = app.createAnonymousContext();
   let count = 0;
   const initializer = (...args) => {
@@ -68,12 +69,23 @@ async function initHandler(registry, app, options) {
 async function loadToApp(config, app) {
 
   const { directory, target, ...opts } = config;
+  let count = 0;
   if (!opts.initializer) {
     const client = app[NAME];
     opts.initializer = factory => {
+      count++;
       return new Producer(factory, { client, app });
     };
   }
   app.loader.loadToApp(directory, target, opts);
+  if (count <= 0) { return; }
+
+  const models = app[target];
+  const promises = [];
+  for (const key in models) {
+    promises.push(models[key].init());
+  }
+
+  await Promise.all(promises);
 
 }

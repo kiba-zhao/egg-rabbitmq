@@ -69,4 +69,5 @@ describe('test/rabbitmq.test.js', () => {
     });
 
   });
+
 });
