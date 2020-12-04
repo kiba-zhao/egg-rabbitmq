@@ -59,7 +59,7 @@ exports.rabbitmq = {
         // 其他参数请参考amqplib.connect的socketOptions
     },
     clients:{  //特定连接参数
-        producer:{}  //生产者连接参数
+        producer:{},  //生产者连接参数
         consumer:{}  //消费者连接参数
     }
 };
@@ -147,7 +147,9 @@ module.exports = SimpleConsumer;
 如果channel或connection出现异常（即发生error事件）,插件会尝试重建链接或channel．
 
 > 间隔时间为前5次5秒
+
 > 5次过后每增加1次重试，间隔增加5秒
+
 > 最大间隔时间为20分钟
 
 ## Questions & Suggestions
